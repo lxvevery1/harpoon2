@@ -32,11 +32,11 @@ function M.setup_autocmds_and_keymaps(bufnr)
     local curr_file = vim.api.nvim_buf_get_name(0)
     local cmd = string.format(
         "autocmd Filetype harpoon "
-            .. "let path = '%s' | call clearmatches() | "
-            -- move the cursor to the line containing the current filename
-            .. "call search('\\V'.path.'\\$') | "
-            -- add a hl group to that line
-            .. "call matchadd('HarpoonCurrentFile', '\\V'.path.'\\$')",
+        .. "let path = '%s' | call clearmatches() | "
+        -- move the cursor to the line containing the current filename
+        .. "call search('\\V'.path.'\\$') | "
+        -- add a hl group to that line
+        .. "call matchadd('HarpoonCurrentFile', '\\V'.path.'\\$')",
         curr_file:gsub("\\", "\\\\")
     )
     vim.cmd(cmd)
@@ -97,6 +97,17 @@ end
 
 function M.set_contents(bufnr, contents)
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, contents)
+end
+
+function M.set_current_menu_item_highlight(bufnr, win_id, current_file, contents)
+    for line_number, file in pairs(contents) do
+        if string.find(current_file, file, 1, true) then
+            -- highlight the harpoon menu line that corresponds to the current buffer
+            vim.api.nvim_buf_add_highlight(bufnr, -1, "CursorLineNr", line_number - 1, 0, -1)
+            -- set the position of the cursor in the harpoon menu to the start of the current buffer line
+            vim.api.nvim_win_set_cursor(win_id, { line_number, 0 })
+        end
+    end
 end
 
 return M
