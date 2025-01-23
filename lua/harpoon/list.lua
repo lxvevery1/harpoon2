@@ -205,7 +205,7 @@ end
 function HarpoonList:remove_at(index)
     if self.items[index] then
         Logger:log(
-            "HarpoonList:remove_at",
+            "HarpoonList:removeAt",
             { item = self.items[index], index = index }
         )
         self.items[index] = nil
